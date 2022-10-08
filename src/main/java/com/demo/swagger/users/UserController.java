@@ -7,15 +7,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
@@ -37,7 +34,10 @@ public class UserController {
     }
     
     @PostMapping("/users")
-    public ResponseEntity<String> createUser(@RequestBody User user){
+    public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest){
+        User user = new User();
+        user.setDob(userRequest.getDob());
+        user.setName(userRequest.getName());
         User savedUser=service.save(user);
         URI location=ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
         return ResponseEntity.created(location).build();
